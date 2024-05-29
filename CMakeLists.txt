@@ -3,9 +3,17 @@ project(ArborX CXX)
 
 find_package(Kokkos 4.2 REQUIRED CONFIG)
 message(STATUS "Found Kokkos: ${Kokkos_DIR} (version \"${Kokkos_VERSION}\")")
+find_package(KokkosComm CONFIG)
+
+if(KokkosComm_FOUND)
+  message(STATUS "Found KokkosComm: ${KokkosComm_DIR}")
+endif()
 
 add_library(ArborX INTERFACE)
 target_link_libraries(ArborX INTERFACE Kokkos::kokkos)
+if(KokkosComm_FOUND)
+  target_link_libraries(ArborX INTERFACE KokkosComm::KokkosComm)
+endif()
 set_target_properties(ArborX PROPERTIES INTERFACE_COMPILE_FEATURES cxx_std_17)
 # As all executables using ArborX depend on it, depending on record_hash allows
 # updating hash each time executable is rebuilt, including when called from
